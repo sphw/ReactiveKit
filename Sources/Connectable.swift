@@ -36,9 +36,9 @@ public final class ConnectableSignal<Source: SignalProtocol>: ConnectableSignalP
 
   private let source: Source
   private let lock = NSRecursiveLock()
-  private let subject: Subject<Source.Element, Source.Error>
+  private let subject: Subject<Source.X, Source.Error>
 
-  public init(source: Source, subject: Subject<Source.Element, Source.Error>) {
+  public init(source: Source, subject: Subject<Source.X, Source.Error>) {
     self.source = source
     self.subject = subject
   }
@@ -51,7 +51,7 @@ public final class ConnectableSignal<Source: SignalProtocol>: ConnectableSignalP
 
   /// Register an observer that will receive events from the signal.
   /// Note that the events will not be generated until `connect` is called.
-  public func observe(with observer: @escaping (Event<Source.Element, Source.Error>) -> Void) -> Disposable {
+  public func observe(with observer: @escaping (Event<Source.X, Source.Error>) -> Void) -> Disposable {
     return subject.observe(with: observer)
   }
 }
@@ -60,7 +60,7 @@ public extension ConnectableSignalProtocol {
 
   /// Convert connectable signal into the ordinary signal by calling `connect`
   /// on the first observation and calling dispose when number of observers goes down to zero.
-  public func refCount() -> Signal<Element, Error> {
+  public func refCount() -> Signal<X, Error> {
     var count = 0
     var connectionDisposable: Disposable? = nil
     return Signal { observer in
@@ -101,7 +101,7 @@ extension SignalProtocol {
 
   /// Ensure that all observers see the same sequence of elements.
   /// Shorthand for `replay(limit).refCount()`.
-  public func shareReplay(limit: Int = Int.max) -> Signal<Element, Error> {
+  public func shareReplay(limit: Int = Int.max) -> Signal<X, Error> {
     return replay(limit: limit).refCount()
   }
 }

@@ -29,12 +29,12 @@ public protocol SubjectProtocol: SignalProtocol, ObserverProtocol {
 }
 
 /// A type that is both a signal and an observer.
-open class Subject<Element, Error: Swift.Error>: SubjectProtocol {
+open class Subject<X, Error: Swift.Error>: SubjectProtocol {
 
   private typealias Token = Int64
   private var nextToken: Token = 0
 
-  private var observers: [Token: Observer<Element, Error>] = [:]
+  private var observers: [Token: Observer<X, Error>] = [:]
   private var terminated = false
 
   public let lock = NSRecursiveLock(name: "com.reactivekit.subject")
@@ -42,27 +42,27 @@ open class Subject<Element, Error: Swift.Error>: SubjectProtocol {
 
   public init() {}
 
-  public func on(_ event: Event<Element, Error>) {
+  public func on(_ event: Event<X, Error>) {
     lock.lock(); defer { lock.unlock() }
     guard !terminated else { return }
     terminated = event.isTerminal
     send(event)
   }
 
-  open func send(_ event: Event<Element, Error>) {
+  open func send(_ event: Event<X, Error>) {
     forEachObserver { $0(event) }
   }
 
-  open func observe(with observer: @escaping Observer<Element, Error>) -> Disposable {
+  open func observe(with observer: @escaping Observer<X, Error>) -> Disposable {
     lock.lock(); defer { lock.unlock() }
     willAdd(observer: observer)
     return add(observer: observer)
   }
 
-  open func willAdd(observer: @escaping Observer<Element, Error>) {
+  open func willAdd(observer: @escaping Observer<X, Error>) {
   }
 
-  private func add(observer: @escaping Observer<Element, Error>) -> Disposable {
+  private func add(observer: @escaping Observer<X, Error>) -> Disposable {
     let token = nextToken
     nextToken = nextToken + 1
 
@@ -73,7 +73,7 @@ open class Subject<Element, Error: Swift.Error>: SubjectProtocol {
     }
   }
 
-  private func forEachObserver(_ execute: (Observer<Element, Error>) -> Void) {
+  private func forEachObserver(_ execute: (Observer<X, Error>) -> Void) {
     for (_, observer) in observers {
       execute(observer)
     }
@@ -82,24 +82,24 @@ open class Subject<Element, Error: Swift.Error>: SubjectProtocol {
 
 extension Subject: BindableProtocol {
 
-  public func bind(signal: Signal<Element, NoError>) -> Disposable {
+  public func bind(signal: Signal<X, NoError>) -> Disposable {
     return signal
       .take(until: disposeBag.deallocated)
       .observeIn(.nonRecursive())
-      .observeNext { [weak self] element in
+      .observeNext { [weak self] X in
         guard let s = self else { return }
-        s.on(.next(element))
+        s.on(.next(X))
     }
   }
 }
 
 /// A subject that propagates received events to the registered observes.
-public final class PublishSubject<Element, Error: Swift.Error>: Subject<Element, Error> {}
+public final class PublishSubject<X, Error: Swift.Error>: Subject<X, Error> {}
 
 /// A subject that replies accumulated sequence of events to each observer.
-public final class ReplaySubject<Element, Error: Swift.Error>: Subject<Element, Error> {
+public final class ReplaySubject<X, Error: Swift.Error>: Subject<X, Error> {
 
-  private var buffer: ArraySlice<Event<Element, Error>> = []
+  private var buffer: ArraySlice<Event<X, Error>> = []
   public let bufferSize: Int
 
   public init(bufferSize: Int = Int.max) {
@@ -110,24 +110,24 @@ public final class ReplaySubject<Element, Error: Swift.Error>: Subject<Element, 
     }
   }
 
-  public override func send(_ event: Event<Element, Error>) {
+  public override func send(_ event: Event<X, Error>) {
     buffer.append(event)
     buffer = buffer.suffix(bufferSize)
     super.send(event)
   }
 
-  public override func willAdd(observer: @escaping Observer<Element, Error>) {
+  public override func willAdd(observer: @escaping Observer<X, Error>) {
     buffer.forEach(observer)
   }
 }
 
 /// A subject that replies latest event to each observer.
-public final class ReplayOneSubject<Element, Error: Swift.Error>: Subject<Element, Error> {
+public final class ReplayOneSubject<X, Error: Swift.Error>: Subject<X, Error> {
 
-  private var lastEvent: Event<Element, Error>? = nil
-  private var terminalEvent: Event<Element, Error>? = nil
+  private var lastEvent: Event<X, Error>? = nil
+  private var terminalEvent: Event<X, Error>? = nil
 
-  public override func send(_ event: Event<Element, Error>) {
+  public override func send(_ event: Event<X, Error>) {
     if event.isTerminal {
       terminalEvent = event
     } else {
@@ -136,7 +136,7 @@ public final class ReplayOneSubject<Element, Error: Swift.Error>: Subject<Elemen
     super.send(event)
   }
 
-  public override func willAdd(observer: @escaping Observer<Element, Error>) {
+  public override func willAdd(observer: @escaping Observer<X, Error>) {
     if let event = lastEvent {
       observer(event)
     }
@@ -148,22 +148,22 @@ public final class ReplayOneSubject<Element, Error: Swift.Error>: Subject<Elemen
 
 
 @available(*, deprecated, message: "All subjects now inherit 'Subject' that can be used in place of 'AnySubject'.")
-public final class AnySubject<Element, Error: Swift.Error>: SubjectProtocol {
-  private let baseObserve: (@escaping Observer<Element, Error>) -> Disposable
-  private let baseOn: Observer<Element, Error>
+public final class AnySubject<X, Error: Swift.Error>: SubjectProtocol {
+  private let baseObserve: (@escaping Observer<X, Error>) -> Disposable
+  private let baseOn: Observer<X, Error>
 
   public let disposeBag = DisposeBag()
 
-  public init<S: SubjectProtocol>(base: S) where S.Element == Element, S.Error == Error {
+  public init<S: SubjectProtocol>(base: S) where S.X == X, S.Error == Error {
     baseObserve = base.observe
     baseOn = base.on
   }
 
-  public func on(_ event: Event<Element, Error>) {
+  public func on(_ event: Event<X, Error>) {
     return baseOn(event)
   }
 
-  public func observe(with observer: @escaping Observer<Element, Error>) -> Disposable {
+  public func observe(with observer: @escaping Observer<X, Error>) -> Disposable {
     return baseObserve(observer)
   }
 }

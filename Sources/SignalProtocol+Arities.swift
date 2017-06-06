@@ -37,7 +37,7 @@ private func tuple<A, B, C, D, E, F>(a: A, b: B, c: C, d: D, e: E, f: F) -> (A, 
 /// Combine multiple signals into one. See `combineLatest(with:)` for more info.
 public func combineLatest
   <A: SignalProtocol, B: SignalProtocol, Result>
-  (_ a: A, _ b: B, combine: @escaping (A.Element, B.Element) -> Result) -> Signal<Result, A.Error>
+  (_ a: A, _ b: B, combine: @escaping (A.X, B.X) -> Result) -> Signal<Result, A.Error>
   where A.Error == B.Error {
     return a.combineLatest(with: b, combine: combine)
 }
@@ -45,7 +45,7 @@ public func combineLatest
 /// Combine multiple signals into one. See `combineLatest(with:)` for more info.
 public func combineLatest
   <A: SignalProtocol, B: SignalProtocol, C: SignalProtocol, Result>
-  (_ a: A, _ b: B, _ c: C, combine: @escaping (A.Element, B.Element, C.Element) -> Result) -> Signal<Result, A.Error>
+  (_ a: A, _ b: B, _ c: C, combine: @escaping (A.X, B.X, C.X) -> Result) -> Signal<Result, A.Error>
   where A.Error == B.Error, A.Error == C.Error {
     return combineLatest(a, b).combineLatest(with: c, combine: { combine($0.0, $0.1, $1) })
 }
@@ -53,7 +53,7 @@ public func combineLatest
 /// Combine multiple signals into one. See `combineLatest(with:)` for more info.
 public func combineLatest
   <A: SignalProtocol, B: SignalProtocol, C: SignalProtocol, D: SignalProtocol, Result>
-  (_ a: A, _ b: B, _ c: C, _ d: D, combine: @escaping (A.Element, B.Element, C.Element, D.Element) -> Result) -> Signal<Result, A.Error>
+  (_ a: A, _ b: B, _ c: C, _ d: D, combine: @escaping (A.X, B.X, C.X, D.X) -> Result) -> Signal<Result, A.Error>
   where A.Error == B.Error, A.Error == C.Error, A.Error == D.Error {
     return combineLatest(a, b, c).combineLatest(with: d, combine: { combine($0.0, $0.1, $0.2, $1) })
 }
@@ -61,7 +61,7 @@ public func combineLatest
 /// Combine multiple signals into one. See `combineLatest(with:)` for more info.
 public func combineLatest
   <A: SignalProtocol, B: SignalProtocol, C: SignalProtocol, D: SignalProtocol, E: SignalProtocol, Result>
-  (_ a: A, _ b: B, _ c: C, _ d: D, _ e: E, combine: @escaping (A.Element, B.Element, C.Element, D.Element, E.Element) -> Result) -> Signal<Result, A.Error>
+  (_ a: A, _ b: B, _ c: C, _ d: D, _ e: E, combine: @escaping (A.X, B.X, C.X, D.X, E.X) -> Result) -> Signal<Result, A.Error>
   where A.Error == B.Error, A.Error == C.Error, A.Error == D.Error, A.Error == E.Error {
     return combineLatest(a, b, c, d).combineLatest(with: e, combine: { combine($0.0, $0.1, $0.2, $0.3, $1) })
 }
@@ -69,7 +69,7 @@ public func combineLatest
 /// Combine multiple signals into one. See `combineLatest(with:)` for more info.
 public func combineLatest
   <A: SignalProtocol, B: SignalProtocol, C: SignalProtocol, D: SignalProtocol, E: SignalProtocol, F: SignalProtocol, Result>
-  (_ a: A, _ b: B, _ c: C, _ d: D, _ e: E, _ f: F, combine: @escaping (A.Element, B.Element, C.Element, D.Element, E.Element, F.Element) -> Result) -> Signal<Result, A.Error>
+  (_ a: A, _ b: B, _ c: C, _ d: D, _ e: E, _ f: F, combine: @escaping (A.X, B.X, C.X, D.X, E.X, F.X) -> Result) -> Signal<Result, A.Error>
   where A.Error == B.Error, A.Error == C.Error, A.Error == D.Error, A.Error == E.Error, A.Error == F.Error {
     return combineLatest(a, b, c, d, e).combineLatest(with: f, combine: { combine($0.0, $0.1, $0.2, $0.3, $0.4, $1) })
 }
@@ -79,7 +79,7 @@ public func combineLatest
 /// Combine multiple signals into one. See `combineLatest(with:)` for more info.
 public func combineLatest
   <A: SignalProtocol, B: SignalProtocol>
-  (_ a: A, _ b: B) -> Signal<(A.Element, B.Element), A.Error>
+  (_ a: A, _ b: B) -> Signal<(A.X, B.X), A.Error>
   where A.Error == B.Error {
     return combineLatest(a, b, combine: tuple)
 }
@@ -87,7 +87,7 @@ public func combineLatest
 /// Combine multiple signals into one. See `combineLatest(with:)` for more info.
 public func combineLatest
   <A: SignalProtocol, B: SignalProtocol, C: SignalProtocol>
-  (_ a: A, _ b: B, _ c: C) -> Signal<(A.Element, B.Element, C.Element), A.Error>
+  (_ a: A, _ b: B, _ c: C) -> Signal<(A.X, B.X, C.X), A.Error>
   where A.Error == B.Error, A.Error == C.Error {
     return combineLatest(a, b, c, combine: tuple)
 }
@@ -95,7 +95,7 @@ public func combineLatest
 /// Combine multiple signals into one. See `combineLatest(with:)` for more info.
 public func combineLatest
   <A: SignalProtocol, B: SignalProtocol, C: SignalProtocol, D: SignalProtocol>
-  (_ a: A, _ b: B, _ c: C, _ d: D) -> Signal<(A.Element, B.Element, C.Element, D.Element), A.Error>
+  (_ a: A, _ b: B, _ c: C, _ d: D) -> Signal<(A.X, B.X, C.X, D.X), A.Error>
   where A.Error == B.Error, A.Error == C.Error, A.Error == D.Error {
     return combineLatest(a, b, c, d, combine: tuple)
 }
@@ -103,7 +103,7 @@ public func combineLatest
 /// Combine multiple signals into one. See `combineLatest(with:)` for more info.
 public func combineLatest
   <A: SignalProtocol, B: SignalProtocol, C: SignalProtocol, D: SignalProtocol, E: SignalProtocol>
-  (_ a: A, _ b: B, _ c: C, _ d: D, _ e: E) -> Signal<(A.Element, B.Element, C.Element, D.Element, E.Element), A.Error>
+  (_ a: A, _ b: B, _ c: C, _ d: D, _ e: E) -> Signal<(A.X, B.X, C.X, D.X, E.X), A.Error>
   where A.Error == B.Error, A.Error == C.Error, A.Error == D.Error, A.Error == E.Error {
     return combineLatest(a, b, c, d, e, combine: tuple)
 }
@@ -111,7 +111,7 @@ public func combineLatest
 /// Combine multiple signals into one. See `combineLatest(with:)` for more info.
 public func combineLatest
   <A: SignalProtocol, B: SignalProtocol, C: SignalProtocol, D: SignalProtocol, E: SignalProtocol, F: SignalProtocol>
-  (_ a: A, _ b: B, _ c: C, _ d: D, _ e: E, _ f: F) -> Signal<(A.Element, B.Element, C.Element, D.Element, E.Element, F.Element), A.Error>
+  (_ a: A, _ b: B, _ c: C, _ d: D, _ e: E, _ f: F) -> Signal<(A.X, B.X, C.X, D.X, E.X, F.X), A.Error>
   where A.Error == B.Error, A.Error == C.Error, A.Error == D.Error, A.Error == E.Error, A.Error == F.Error {
     return combineLatest(a, b, c, d, e, f, combine: tuple)
 }
@@ -121,7 +121,7 @@ public func combineLatest
 /// Zip multiple signals into one. See `zip(with:)` for more info.
 public func zip
   <A: SignalProtocol, B: SignalProtocol, Result>
-  (_ a: A, _ b: B, combine: @escaping (A.Element, B.Element) -> Result) -> Signal<Result, A.Error>
+  (_ a: A, _ b: B, combine: @escaping (A.X, B.X) -> Result) -> Signal<Result, A.Error>
   where A.Error == B.Error {
     return a.zip(with: b, combine: combine)
 }
@@ -129,7 +129,7 @@ public func zip
 /// Zip multiple signals into one. See `zip(with:)` for more info.
 public func zip
   <A: SignalProtocol, B: SignalProtocol, C: SignalProtocol, Result>
-  (_ a: A, _ b: B, _ c: C, combine: @escaping (A.Element, B.Element, C.Element) -> Result) -> Signal<Result, A.Error>
+  (_ a: A, _ b: B, _ c: C, combine: @escaping (A.X, B.X, C.X) -> Result) -> Signal<Result, A.Error>
   where A.Error == B.Error, A.Error == C.Error {
     return zip(a, b).zip(with: c, combine: { combine($0.0, $0.1, $1) })
 }
@@ -137,7 +137,7 @@ public func zip
 /// Zip multiple signals into one. See `zip(with:)` for more info.
 public func zip
   <A: SignalProtocol, B: SignalProtocol, C: SignalProtocol, D: SignalProtocol, Result>
-  (_ a: A, _ b: B, _ c: C, _ d: D, combine: @escaping (A.Element, B.Element, C.Element, D.Element) -> Result) -> Signal<Result, A.Error>
+  (_ a: A, _ b: B, _ c: C, _ d: D, combine: @escaping (A.X, B.X, C.X, D.X) -> Result) -> Signal<Result, A.Error>
   where A.Error == B.Error, A.Error == C.Error, A.Error == D.Error {
     return zip(a, b, c).zip(with: d, combine: { combine($0.0, $0.1, $0.2, $1) })
 }
@@ -145,7 +145,7 @@ public func zip
 /// Zip multiple signals into one. See `zip(with:)` for more info.
 public func zip
   <A: SignalProtocol, B: SignalProtocol, C: SignalProtocol, D: SignalProtocol, E: SignalProtocol, Result>
-  (_ a: A, _ b: B, _ c: C, _ d: D, _ e: E, combine: @escaping (A.Element, B.Element, C.Element, D.Element, E.Element) -> Result) -> Signal<Result, A.Error>
+  (_ a: A, _ b: B, _ c: C, _ d: D, _ e: E, combine: @escaping (A.X, B.X, C.X, D.X, E.X) -> Result) -> Signal<Result, A.Error>
   where A.Error == B.Error, A.Error == C.Error, A.Error == D.Error, A.Error == E.Error {
     return zip(a, b, c, d).zip(with: e, combine: { combine($0.0, $0.1, $0.2, $0.3, $1) })
 }
@@ -153,7 +153,7 @@ public func zip
 /// Zip multiple signals into one. See `zip(with:)` for more info.
 public func zip
   <A: SignalProtocol, B: SignalProtocol, C: SignalProtocol, D: SignalProtocol, E: SignalProtocol, F: SignalProtocol, Result>
-  (_ a: A, _ b: B, _ c: C, _ d: D, _ e: E, _ f: F, combine: @escaping (A.Element, B.Element, C.Element, D.Element, E.Element, F.Element) -> Result) -> Signal<Result, A.Error>
+  (_ a: A, _ b: B, _ c: C, _ d: D, _ e: E, _ f: F, combine: @escaping (A.X, B.X, C.X, D.X, E.X, F.X) -> Result) -> Signal<Result, A.Error>
   where A.Error == B.Error, A.Error == C.Error, A.Error == D.Error, A.Error == E.Error, A.Error == F.Error {
     return zip(a, b, c, d, e).zip(with: f, combine: { combine($0.0, $0.1, $0.2, $0.3, $0.4, $1) })
 }
@@ -163,7 +163,7 @@ public func zip
 /// Zip multiple signals into one. See `zip(with:)` for more info.
 public func zip
   <A: SignalProtocol, B: SignalProtocol>
-  (_ a: A, _ b: B) -> Signal<(A.Element, B.Element), A.Error>
+  (_ a: A, _ b: B) -> Signal<(A.X, B.X), A.Error>
   where A.Error == B.Error {
     return zip(a, b, combine: tuple)
 }
@@ -171,7 +171,7 @@ public func zip
 /// Zip multiple signals into one. See `zip(with:)` for more info.
 public func zip
   <A: SignalProtocol, B: SignalProtocol, C: SignalProtocol>
-  (_ a: A, _ b: B, _ c: C) -> Signal<(A.Element, B.Element, C.Element), A.Error>
+  (_ a: A, _ b: B, _ c: C) -> Signal<(A.X, B.X, C.X), A.Error>
   where A.Error == B.Error, A.Error == C.Error {
     return zip(a, b, c, combine: tuple)
 }
@@ -179,7 +179,7 @@ public func zip
 /// Zip multiple signals into one. See `zip(with:)` for more info.
 public func zip
   <A: SignalProtocol, B: SignalProtocol, C: SignalProtocol, D: SignalProtocol>
-  (_ a: A, _ b: B, _ c: C, _ d: D) -> Signal<(A.Element, B.Element, C.Element, D.Element), A.Error>
+  (_ a: A, _ b: B, _ c: C, _ d: D) -> Signal<(A.X, B.X, C.X, D.X), A.Error>
   where A.Error == B.Error, A.Error == C.Error, A.Error == D.Error {
     return zip(a, b, c, d, combine: tuple)
 }
@@ -187,7 +187,7 @@ public func zip
 /// Zip multiple signals into one. See `zip(with:)` for more info.
 public func zip
   <A: SignalProtocol, B: SignalProtocol, C: SignalProtocol, D: SignalProtocol, E: SignalProtocol>
-  (_ a: A, _ b: B, _ c: C, _ d: D, _ e: E) -> Signal<(A.Element, B.Element, C.Element, D.Element, E.Element), A.Error>
+  (_ a: A, _ b: B, _ c: C, _ d: D, _ e: E) -> Signal<(A.X, B.X, C.X, D.X, E.X), A.Error>
   where A.Error == B.Error, A.Error == C.Error, A.Error == D.Error, A.Error == E.Error {
     return zip(a, b, c, d, e, combine: tuple)
 }
@@ -195,7 +195,7 @@ public func zip
 /// Zip multiple signals into one. See `zip(with:)` for more info.
 public func zip
   <A: SignalProtocol, B: SignalProtocol, C: SignalProtocol, D: SignalProtocol, E: SignalProtocol, F: SignalProtocol>
-  (_ a: A, _ b: B, _ c: C, _ d: D, _ e: E, _ f: F) -> Signal<(A.Element, B.Element, C.Element, D.Element, E.Element, F.Element), A.Error>
+  (_ a: A, _ b: B, _ c: C, _ d: D, _ e: E, _ f: F) -> Signal<(A.X, B.X, C.X, D.X, E.X, F.X), A.Error>
   where A.Error == B.Error, A.Error == C.Error, A.Error == D.Error, A.Error == E.Error, A.Error == F.Error {
     return zip(a, b, c, d, e, f, combine: tuple)
 }
@@ -206,40 +206,40 @@ public func zip
 /// Merge multiple signals into one. See `merge(with:)` for more info.
 public func merge
   <A: SignalProtocol, B: SignalProtocol>
-  (_ a: A, _ b: B) -> Signal<A.Element, A.Error>
-  where A.Element == B.Element, A.Error == B.Error {
+  (_ a: A, _ b: B) -> Signal<A.X, A.Error>
+  where A.X == B.X, A.Error == B.Error {
     return a.merge(with: b)
 }
 
 /// Merge multiple signals into one. See `merge(with:)` for more info.
 public func merge
   <A: SignalProtocol, B: SignalProtocol, C: SignalProtocol>
-  (_ a: A, _ b: B, _ c: C) -> Signal<A.Element, A.Error>
-  where A.Element == B.Element, A.Element == C.Element, A.Error == B.Error, A.Error == C.Error {
+  (_ a: A, _ b: B, _ c: C) -> Signal<A.X, A.Error>
+  where A.X == B.X, A.X == C.X, A.Error == B.Error, A.Error == C.Error {
     return merge(a, b).merge(with: c)
 }
 
 /// Merge multiple signals into one. See `merge(with:)` for more info.
 public func merge
   <A: SignalProtocol, B: SignalProtocol, C: SignalProtocol, D: SignalProtocol>
-  (_ a: A, _ b: B, _ c: C, _ d: D) -> Signal<A.Element, A.Error>
-  where A.Element == B.Element, A.Element == C.Element, A.Element == D.Element, A.Error == B.Error, A.Error == C.Error, A.Error == D.Error {
+  (_ a: A, _ b: B, _ c: C, _ d: D) -> Signal<A.X, A.Error>
+  where A.X == B.X, A.X == C.X, A.X == D.X, A.Error == B.Error, A.Error == C.Error, A.Error == D.Error {
     return merge(a, b, c).merge(with: d)
 }
 
 /// Merge multiple signals into one. See `merge(with:)` for more info.
 public func merge
   <A: SignalProtocol, B: SignalProtocol, C: SignalProtocol, D: SignalProtocol, E: SignalProtocol>
-  (_ a: A, _ b: B, _ c: C, _ d: D, _ e: E) -> Signal<A.Element, A.Error>
-  where A.Element == B.Element, A.Element == C.Element, A.Element == D.Element, A.Element == E.Element, A.Error == B.Error, A.Error == C.Error, A.Error == D.Error, A.Error == E.Error {
+  (_ a: A, _ b: B, _ c: C, _ d: D, _ e: E) -> Signal<A.X, A.Error>
+  where A.X == B.X, A.X == C.X, A.X == D.X, A.X == E.X, A.Error == B.Error, A.Error == C.Error, A.Error == D.Error, A.Error == E.Error {
     return merge(a, b, c, d).merge(with: e)
 }
 
 /// Merge multiple signals into one. See `merge(with:)` for more info.
 public func merge
   <A: SignalProtocol, B: SignalProtocol, C: SignalProtocol, D: SignalProtocol, E: SignalProtocol, F: SignalProtocol>
-  (_ a: A, _ b: B, _ c: C, _ d: D, _ e: E, _ f: F) -> Signal<A.Element, A.Error>
-  where A.Element == B.Element, A.Element == C.Element, A.Element == D.Element, A.Element == E.Element, A.Element == F.Element, A.Error == B.Error, A.Error == C.Error, A.Error == D.Error, A.Error == E.Error, A.Error == F.Error {
+  (_ a: A, _ b: B, _ c: C, _ d: D, _ e: E, _ f: F) -> Signal<A.X, A.Error>
+  where A.X == B.X, A.X == C.X, A.X == D.X, A.X == E.X, A.X == F.X, A.Error == B.Error, A.Error == C.Error, A.Error == D.Error, A.Error == E.Error, A.Error == F.Error {
     return merge(a, b, c, d, e).merge(with: f)
 }
 
@@ -248,39 +248,39 @@ public func merge
 /// Amb multiple signals into one. See `amb(with:)` for more info.
 public func amb
   <A: SignalProtocol, B: SignalProtocol>
-  (_ a: A, _ b: B) -> Signal<A.Element, A.Error>
-  where A.Element == B.Element, A.Error == B.Error {
+  (_ a: A, _ b: B) -> Signal<A.X, A.Error>
+  where A.X == B.X, A.Error == B.Error {
     return a.amb(with: b)
 }
 
 /// Amb multiple signals into one. See `amb(with:)` for more info.
 public func amb
   <A: SignalProtocol, B: SignalProtocol, C: SignalProtocol>
-  (_ a: A, _ b: B, _ c: C) -> Signal<A.Element, A.Error>
-  where A.Element == B.Element, A.Element == C.Element, A.Error == B.Error, A.Error == C.Error {
+  (_ a: A, _ b: B, _ c: C) -> Signal<A.X, A.Error>
+  where A.X == B.X, A.X == C.X, A.Error == B.Error, A.Error == C.Error {
     return amb(a, b).amb(with: c)
 }
 
 /// Amb multiple signals into one. See `amb(with:)` for more info.
 public func amb
   <A: SignalProtocol, B: SignalProtocol, C: SignalProtocol, D: SignalProtocol>
-  (_ a: A, _ b: B, _ c: C, _ d: D) -> Signal<A.Element, A.Error>
-  where A.Element == B.Element, A.Element == C.Element, A.Element == D.Element, A.Error == B.Error, A.Error == C.Error, A.Error == D.Error {
+  (_ a: A, _ b: B, _ c: C, _ d: D) -> Signal<A.X, A.Error>
+  where A.X == B.X, A.X == C.X, A.X == D.X, A.Error == B.Error, A.Error == C.Error, A.Error == D.Error {
     return amb(a, b, c).amb(with: d)
 }
 
 /// Amb multiple signals into one. See `amb(with:)` for more info.
 public func amb
   <A: SignalProtocol, B: SignalProtocol, C: SignalProtocol, D: SignalProtocol, E: SignalProtocol>
-  (_ a: A, _ b: B, _ c: C, _ d: D, _ e: E) -> Signal<A.Element, A.Error>
-  where A.Element == B.Element, A.Element == C.Element, A.Element == D.Element, A.Element == E.Element, A.Error == B.Error, A.Error == C.Error, A.Error == D.Error, A.Error == E.Error {
+  (_ a: A, _ b: B, _ c: C, _ d: D, _ e: E) -> Signal<A.X, A.Error>
+  where A.X == B.X, A.X == C.X, A.X == D.X, A.X == E.X, A.Error == B.Error, A.Error == C.Error, A.Error == D.Error, A.Error == E.Error {
     return amb(a, b, c, d).amb(with: e)
 }
 
 /// Amb multiple signals into one. See `amb(with:)` for more info.
 public func amb
   <A: SignalProtocol, B: SignalProtocol, C: SignalProtocol, D: SignalProtocol, E: SignalProtocol, F: SignalProtocol>
-  (_ a: A, _ b: B, _ c: C, _ d: D, _ e: E, _ f: F) -> Signal<A.Element, A.Error>
-  where A.Element == B.Element, A.Element == C.Element, A.Element == D.Element, A.Element == E.Element, A.Element == F.Element, A.Error == B.Error, A.Error == C.Error, A.Error == D.Error, A.Error == E.Error, A.Error == F.Error {
+  (_ a: A, _ b: B, _ c: C, _ d: D, _ e: E, _ f: F) -> Signal<A.X, A.Error>
+  where A.X == B.X, A.X == C.X, A.X == D.X, A.X == E.X, A.X == F.X, A.Error == B.Error, A.Error == C.Error, A.Error == D.Error, A.Error == E.Error, A.Error == F.Error {
     return amb(a, b, c, d, e).amb(with: f)
 }
